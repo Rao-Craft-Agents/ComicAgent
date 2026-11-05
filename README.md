@@ -1,97 +1,79 @@
-# Comic
+# ComicAgent
 
 ![How a hash map finds a key](Docs/Testing/how-a-hash-map-finds-a-key.png)
 
-**Stick-figure comic strips that explain a concept.** Ask a host that runs Granite agents (Craft) to explain something
-with `$comic`, and its model writes the strip's script: a few panels, stick figures from a catalogue of poses, what
-each says, a caption a panel, a title and an aside. The agent lays it out, letters every word by hand, measures what
-fits, asks the model to fix what ran over, and inks it on the GPU. The PNG carries its script, so a strip is drawn
-again, or changed, from the picture alone.
+Explain a concept with a stick-figure comic strip. Ask with `$comic`, and Craft's model writes the strip's script:
+a few panels, stick figures from a catalogue of poses, what each says, a caption a panel, a title and an aside. `comic`
+lays it out, letters every word by hand, has the model fix whatever ran over, and draws it as a PNG. The picture carries
+its script, so a strip can be drawn again, or changed, from the picture alone.
 
-```text
+## What you can ask
+
+```
 explain how a hash map finds a key, as a comic $comic #canvas
+$comic a one-panel gag about off-by-one errors
+$comic explain recursion in four panels, for someone who has only written loops
+$comic draw comics/how-a-hash-map-finds-a-key.png again, with a panel on what happens when the buckets fill
 ```
 
-The first Rust agent on [GraniteRust](https://github.com/riteshpakala/GraniteRust), the Rust port of Granite's agent
-kernel and its standard (`granite-agent/1`). A host written in Swift calls it exactly as it calls a Swift agent.
+In the Craft app, `#canvas` opens the pane that shows the pictures a session writes, so the strip appears beside the
+chat.
 
-## What it takes
+## What you get
 
-| Field | What it is |
-| --- | --- |
-| `brief` | what to explain and the angle to take: the concept, who is confused by it, where the joke is; the person's ask when left out |
-| `panels` | how many panels, 1 to 6; left out, the model picks three to five, or one for a gag |
-| `script` | a strip's PNG from an earlier call (it carries its script), or a `.comic.json`, to draw again; with a `brief`, changed as the brief asks |
-| `output` | where to write the PNG; `comics/<title>.png` when left out |
-| `rounds` | how many times the model may fix what the strip measured; 3 when left out |
-| `seed` | a number that fixes the hand's wobble; the same script and seed draw the same picture |
-| `renderer` | `gpu`, `cpu`, or `auto` (left out): the GPU when there is one, the same picture on the CPU when there is none |
+- **A strip that explains.** One to six panels (three to five unless you say, or one for a gag), with a title, a
+  caption a panel and an aside.
+- **Lettered by hand.** Every word in capitals, jittered a little glyph by glyph the way a person letters a comic; a
+  seed fixes the hand's wobble, so the same script and seed draw the same picture.
+- **A PNG at 2x.** 3200 pixels wide for a strip, 1600 for one panel, with alt text to show under it.
+- **A picture you can draw again.** The PNG carries its script, so a later call can redraw it, or change it as a brief
+  asks, from the picture alone.
+- **The GPU when there is one.** The same picture on the CPU when there is none, and the answer says so.
 
-Every field may be left out. With no `script`, the host's model drafts one; a host with no model is refused with the
-fix ("give `script`").
+## How it works
 
-## What it makes and answers
+- Craft's model writes the script, which says meaning only, never a coordinate. The agent lays it out and measures
+  what fits.
+- What ran over goes back to the model to fix, for up to three rounds unless the call says otherwise; the best round is
+  drawn once. The answer names anything it could only do in part, such as text cut to fit or an unknown pose drawn
+  standing.
+- A request it cannot carry out is refused with a sentence that says the fix: no model and no script to draw, `panels`
+  outside 1 to 6, or the GPU asked for where there is none.
+- Each call runs in a process of its own, released when it has answered.
 
-It makes `comic` into `comics/*`: a PNG at 2x (3200 px wide for a strip, 1600 for one panel). It answers
-`granite-answer/1`: `path`/`paths`, `made` against `expected` (one `comic`, named for the title), `problems` for what it
-could only do in part (`short` text cut to fit, `fallback` an unknown pose drawn standing or the CPU drawing for a
-missing GPU), and beside them `width`, `height`, `panels`, `title`, `alt` (show it under the picture), `rounds`,
-`findings` (what the strip written still measures wrong) and `renderer`. When findings are left, `note` tells the
-calling model the call is done, so it does not call again to fix what the drawing kept.
+## Works well with
 
-It refuses with a kind and a sentence that says the fix: `call` (no model and no script, a script that does not read,
-an output it cannot write), `input` (`panels` outside 1 to 6), `model` (the model's drafts were not strips twice),
-`device` (`renderer: gpu` where there is no GPU). [`Schema/Comic.md`](Schema/Comic.md) is its copy of Craft's agent
-standard, written by `craft agents schema comic`.
+`comic` is the first Rust agent on [GraniteRust](https://github.com/riteshpakala/GraniteRust), the Rust port of
+Granite's agent kernel and its standard. A host written in Swift calls it exactly as it calls a Swift agent, so Craft
+offers it from a shelf beside the other Rao Craft Agents with no change.
 
-## The script
+## Get it
 
-[`Schema/ComicScript.md`](Schema/ComicScript.md) is the standard, `craft-comic/1`, with its JSON Schema
-([`Schema/comic.schema.json`](Schema/comic.schema.json)) and a real script
-([`Schema/examples/hashmap.comic.json`](Schema/examples/hashmap.comic.json)). It says meaning only, never a coordinate.
-
-## How a host runs it
-
-The repository is a Cargo workspace whose `crates/comic` names its runner (`[package.metadata.granite] agent =
-"comic"`). An installer clones it, builds the runner in release, asks it what it carries (`comic --describe`), and keeps
-it on a shelf with its record; each call is then a process of its own, released when it has answered.
+Installing a Cargo repository from Craft itself, and listing it in the Agent Store, come with Craft's Cargo install
+path. Until then, install it with GraniteRust's installer onto a shelf, and run Craft with `CRAFT_AGENTS_DIR` naming
+that shelf, which Craft then reads in place of its own (`~/.rao/apps/craft/agents`):
 
 ```bash
-granite agents add https://github.com/Rao-Craft-Agents/ComicAgent.git --shelf <shelf>   # GraniteRust's installer
-echo '{"perform":{"word":"comic","input":{"script":"strip.png"},"model":false}}' | <shelf>/ComicAgent/agent
+granite agents add https://github.com/Rao-Craft-Agents/ComicAgent.git --shelf <shelf>
+CRAFT_AGENTS_DIR=<shelf> craft agents      # lists comic
 ```
 
-Craft offers a Rust runner from its shelf with no change (`craft agents` lists it, Craft's model drafts the script).
-Installing a Cargo repository from Craft itself, and listing it in the store, come with Craft's Cargo install path.
+Then say `$comic` in a request.
 
-## The command
+## Requirements
 
-```text
-comic draw <script.comic.json | strip.png> [--out x.png] [--seed N] [--renderer gpu|cpu|auto]
-comic extract <strip.png>        the script a strip carries
-comic sample                     the fixture script
-comic describe                   the agent's entry
-comic icon [--out path]          Assets/icon.png, drawn by the agent itself
-comic compare <a.png> <b.png> [--tolerance 3]
-```
+- macOS 14 or later, or Linux on arm64. With no GPU, as in a Linux VM, the strip is drawn on the CPU.
+- Rust and GraniteRust's installer, which clones the repository and builds the runner from source, in release.
+- A host with a model to draft the script; with no model, give it a `script` to draw.
+- The source is MIT. The runner links GraniteRust, which is GPL-3.0, so a built `comic` runner is a GPL-3.0 combined
+  work.
+- The lettering is the Hershey Simplex Roman font: the Hershey Fonts were originally created by Dr. A. V. Hershey while
+  working at the U. S. National Bureau of Standards, and the format of the font data was originally created by James
+  Hurt, Cognition, Inc. (the full acknowledgement is in `crates/comic-core/fonts/HERSHEY-LICENSE.txt`).
 
-`COMIC_RENDERER=gpu|cpu|auto` chooses the renderer when a call does not.
+## For developers
 
-## Building and testing
-
-```bash
-cargo test                                    # the script, lettering, layout, both renderers, the agent, a call over the wire
-GRANITE_RUST=<clone> scripts/check.sh         # the suite, then GraniteRust's container check on this repository
-GRANITE_RUST=<clone> scripts/check.sh --native
-```
-
-To work on GraniteRust and this agent together, `GRANITE_RUST=<clone> scripts/with-local-granite.sh cargo …` reads
-GraniteRust's GitHub URL from a clone (git's own URL rewriting, for that command only). [`TESTING.md`](TESTING.md) has
-the runs.
-
-## Licences
-
-The source is MIT. The runner links GraniteRust, which is GPL-3.0, so a built `comic` runner is a GPL-3.0 combined
-work. The lettering is the Hershey Simplex Roman font: the Hershey Fonts were originally created by Dr. A. V. Hershey
-while working at the U. S. National Bureau of Standards, and the format of the font data was originally created by
-James Hurt, Cognition, Inc. (the full acknowledgement is in `crates/comic-core/fonts/HERSHEY-LICENSE.txt`).
+What a call takes and answers, the script, how a host runs it, the `comic` command and how to build and test it are in
+the [reference](Docs/Reference.md). The agent standard it follows is [Schema/Comic.md](Schema/Comic.md), its copy of
+Craft's agent standard; the script's own standard, `craft-comic/1`, is [Schema/ComicScript.md](Schema/ComicScript.md);
+and how it is tested is [TESTING.md](TESTING.md).
