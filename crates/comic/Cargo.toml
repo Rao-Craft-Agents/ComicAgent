@@ -1,0 +1,34 @@
+# The comic agent: its input, answer and refusals, the run loop (draft with the host's model, measure, revise,
+# draw), the `comic` command, and the runner whose main is GraniteRust's AgentServer.
+[package]
+name = "comic-agent"
+description = "A stick-figure comic strip that explains a concept, as a Granite agent package: word `comic`."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[package.metadata.granite]
+# The runner an installer builds, and the installation's name on a shelf.
+agent = "comic"
+name = "ComicAgent"
+
+[lib]
+name = "comic_agent"
+
+[[bin]]
+name = "comic"
+path = "src/main.rs"
+
+[dependencies]
+comic-core = { workspace = true }
+comic-render = { workspace = true }
+granite-agents = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+
+[dev-dependencies]
+granite = { workspace = true }
+tempfile = { workspace = true }

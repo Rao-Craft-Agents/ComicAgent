@@ -9,7 +9,7 @@
 
 [workspace]
 resolver = "3"
-members = ["crates/comic-core", "crates/comic-render"]
+members = ["crates/comic-core", "crates/comic-render", "crates/comic"]
 
 [workspace.package]
 edition = "2024"
