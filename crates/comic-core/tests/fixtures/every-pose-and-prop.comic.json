@@ -1,0 +1,8 @@
+{"schema":"craft-comic/1","title":"Every pose and prop","panels":[
+ {"caption":{"text":"Walking past a tree and a door."},"figures":[{"id":"a","pose":"walking","at":"left","label":"THE NEW HIRE"},{"id":"b","pose":"waving","at":"right"}],"props":[{"kind":"tree","at":"center"},{"kind":"door","at":"right"}],"bubbles":[{"by":"b","text":"Hi!"},{"by":"a","text":"Is this where the servers live?","kind":"thought"}]},
+ {"figures":[{"id":"c","pose":"holding-sign","at":"left","sign":"CACHE ME OUTSIDE"},{"id":"d","pose":"facepalm","at":"right"}],"bubbles":[{"by":"d","text":"Please stop.","kind":"shout"},{"by":"off","text":"Meeting in five minutes."}]},
+ {"figures":[{"id":"e","pose":"pointing","at":"left"}],"props":[{"kind":"graph","at":"center","text":"spike"},{"kind":"cloud","at":"right","text":"THE CLOUD"}],"bubbles":[{"by":"e","text":"This is when we moved it all to the cloud."}]},
+ {"figures":[{"id":"f","pose":"lying-down","at":"center"}],"props":[{"kind":"box","at":"left"},{"kind":"signpost","at":"right","text":"PRODUCTION"}],"bubbles":[{"by":"f","text":"Just resting my eyes while the build runs."}]},
+ {"caption":{"text":"An arrow and a wiggle.","at":"below"},"figures":[{"id":"g","pose":"standing","at":"left"},{"id":"h","pose":"shrugging","at":"right"}],"props":[{"kind":"arrow","at":"left","text":"LATER"},{"kind":"graph","at":"right","text":"wiggle"}],"bubbles":[{"by":"h","text":"Nobody knows what it does."}]},
+ {"figures":[{"id":"i","pose":"sitting","at":"center"},{"id":"j","pose":"arms-up","at":"left"}],"props":[{"kind":"desk","at":"center"},{"kind":"laptop","at":"center"}],"bubbles":[{"by":"j","text":"It works!"},{"by":"i","text":"Don't touch anything.","kind":"thought"}]}
+]}

@@ -1,0 +1,44 @@
+{
+  "schema": "craft-comic/1",
+  "title": "How a hash map finds a key",
+  "alt": "Two different keys can land in the same bucket. The map then checks each one in that bucket, which is still faster than reading the whole list.",
+  "panels": [
+    {
+      "caption": { "text": "A hash map keeps a row of numbered buckets.", "at": "above" },
+      "figures": [
+        { "id": "ana", "pose": "pointing", "at": "left" }
+      ],
+      "props": [
+        { "kind": "whiteboard", "at": "center", "text": "BUCKETS 0 1 2 3" }
+      ],
+      "bubbles": [
+        { "by": "ana", "text": "To store a key, I turn it into a number first." }
+      ]
+    },
+    {
+      "figures": [
+        { "id": "ana", "pose": "standing", "at": "left" },
+        { "id": "ben", "pose": "shrugging", "at": "right" }
+      ],
+      "bubbles": [
+        { "by": "ben", "text": "Like a fingerprint for the word?" },
+        { "by": "ana", "text": "Yes. \"Cat\" always comes out as 2, so cat goes in bucket 2." }
+      ]
+    },
+    {
+      "caption": { "text": "Later, looking it up.", "at": "below" },
+      "figures": [
+        { "id": "ben", "pose": "sitting", "at": "left" },
+        { "id": "ana", "pose": "arms-up", "at": "right" }
+      ],
+      "props": [
+        { "kind": "desk", "at": "left" },
+        { "kind": "laptop", "at": "left" }
+      ],
+      "bubbles": [
+        { "by": "ben", "text": "So I get the same number and look in one bucket?" },
+        { "by": "ana", "text": "One look instead of a search. That is the whole trick!" }
+      ]
+    }
+  ]
+}

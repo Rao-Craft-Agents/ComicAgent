@@ -1,0 +1,38 @@
+# ComicAgent: a stick-figure comic strip that explains a concept, as a Granite agent package in Rust. An app on
+# GraniteRust installs it from this repository and runs each call in a process of its own; the word is `comic`.
+#
+#   crates/comic-core     the script standard (craft-comic/1) and everything that turns a script into ink strokes
+#   crates/comic-render   the strokes drawn: the same signed-distance math on the GPU (wgpu) and on the CPU
+#   crates/comic          the agent: its input, answer, refusals, the run loop, the `comic` command and runner
+#
+# GraniteRust is taken by git URL on its main branch, as every Swift agent takes Granite; Cargo.lock pins the commit.
+
+[workspace]
+resolver = "3"
+members = ["crates/comic-core", "crates/comic-render"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+version = "0.1.0"
+rust-version = "1.87"
+repository = "https://github.com/Rao-Craft-Agents/ComicAgent"
+
+[workspace.dependencies]
+granite = { git = "https://github.com/riteshpakala/GraniteRust.git", branch = "main" }
+granite-agents = { git = "https://github.com/riteshpakala/GraniteRust.git", branch = "main" }
+comic-core = { path = "crates/comic-core" }
+comic-render = { path = "crates/comic-render" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "fs"] }
+tempfile = "3"
+
+# The drawing crates run optimized even in debug and test builds: a strip is about five million pixels, and an
+# unoptimized render takes most of a minute.
+[profile.dev.package.comic-core]
+opt-level = 3
+[profile.dev.package.comic-render]
+opt-level = 3
+[profile.dev.package."*"]
+opt-level = 2

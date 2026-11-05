@@ -1,0 +1,65 @@
+{
+  "$id": "https://github.com/Rao-Craft-Agents/ComicAgent/blob/main/Schema/comic.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A stick-figure comic script (craft-comic/1)",
+  "description": "What the host's model writes and what a strip's PNG carries in its `comic-spec` iTXt chunk: panels of stick figures from a catalogue of poses, what they say, a caption a panel, a few props, a title and an aside. The agent lays it out, letters it and draws it; nothing here says where anything goes on the page.",
+  "type": "object",
+  "required": ["schema", "panels"],
+  "properties": {
+    "schema": { "const": "craft-comic/1" },
+    "title": { "type": "string", "maxLength": 48, "description": "the strip's name, lettered above it" },
+    "alt": { "type": "string", "maxLength": 240, "description": "the aside a reader finds after the strip: a second joke, the caveat; never drawn" },
+    "panels": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/panel" } }
+  },
+  "$defs": {
+    "panel": {
+      "type": "object",
+      "required": ["figures"],
+      "description": "one beat of the strip",
+      "properties": {
+        "caption": {
+          "type": "object",
+          "required": ["text"],
+          "description": "the narrator's box",
+          "properties": {
+            "text": { "type": "string", "maxLength": 140 },
+            "at": { "enum": ["above", "below"] }
+          }
+        },
+        "figures": { "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/figure" } },
+        "props": { "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/prop" } },
+        "bubbles": { "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/bubble" } }
+      }
+    },
+    "figure": {
+      "type": "object",
+      "required": ["id", "pose"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,15}$", "description": "short and lowercase, the same across panels for the same person" },
+        "pose": { "enum": ["standing", "pointing", "arms-up", "shrugging", "facepalm", "walking", "sitting", "lying-down", "holding-sign", "waving"] },
+        "facing": { "enum": ["left", "right"] },
+        "at": { "enum": ["left", "center", "right"] },
+        "label": { "type": "string", "maxLength": 20, "description": "written under the figure, only when who they are matters" },
+        "sign": { "type": "string", "maxLength": 24, "description": "what a figure holding a sign has written on it" }
+      }
+    },
+    "bubble": {
+      "type": "object",
+      "required": ["by", "text"],
+      "properties": {
+        "by": { "type": "string", "description": "a figure's id in this panel, or \"off\" for a voice from outside it" },
+        "text": { "type": "string", "maxLength": 110 },
+        "kind": { "enum": ["speech", "thought", "shout"] }
+      }
+    },
+    "prop": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["desk", "laptop", "whiteboard", "box", "arrow", "cloud", "graph", "door", "tree", "signpost"] },
+        "at": { "enum": ["left", "center", "right"] },
+        "text": { "type": "string", "maxLength": 48, "description": "what a whiteboard, signpost, cloud or arrow says; for a graph: up, down, spike or wiggle" }
+      }
+    }
+  }
+}

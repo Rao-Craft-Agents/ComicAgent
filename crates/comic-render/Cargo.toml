@@ -1,0 +1,21 @@
+[package]
+name = "comic-render"
+description = "A comic's strokes drawn: the same signed-distance math on the GPU (wgpu) and on the CPU, written as PNG."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+# wgpu 30 needs 1.87; the rest of the workspace keeps 1.85.
+rust-version = "1.87"
+publish = false
+
+[features]
+default = ["gpu"]
+# The GPU path. Without it the CPU path draws every strip, the same picture.
+gpu = ["dep:wgpu", "dep:pollster"]
+
+[dependencies]
+comic-core = { workspace = true }
+png = "0.18.1"
+bytemuck = { version = "1.25.2", features = ["derive"] }
+wgpu = { version = "30.0.1", optional = true }
+pollster = { version = "1.0.1", optional = true }

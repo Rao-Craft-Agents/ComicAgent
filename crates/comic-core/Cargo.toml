@@ -1,0 +1,12 @@
+[package]
+name = "comic-core"
+description = "The craft-comic/1 script and everything that turns one into ink strokes: lettering, figures, props, layout."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
