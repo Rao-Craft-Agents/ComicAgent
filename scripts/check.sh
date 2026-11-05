@@ -37,8 +37,10 @@ fi
 png="$out/work/comics/how-a-hash-map-finds-a-key.png"
 read -r width height < <(od -An -tu1 -j16 -N8 "$png" | awk '{print $1*16777216+$2*65536+$3*256+$4, $5*16777216+$6*65536+$7*256+$8}')
 [ "$width" = "$(jq .width "$answer")" ] && [ "$height" = "$(jq .height "$answer")" ] || { echo "FAILED: the PNG is ${width}x${height}" >&2; exit 1; }
+schemas=(--schemas "$root/Schema" --schemas "$granite/Schema" --schemas "$granite/containers/schemas")
+"$granite/target/release/granite" check "${schemas[@]}" --schema comic.answer.schema.json "$answer"
 "$comic" extract "$png" > "$out/carried.comic.json"
-"$granite/target/release/granite" check --schemas "$root/Schema" --schema comic.schema.json "$out/carried.comic.json"
+"$granite/target/release/granite" check "${schemas[@]}" --schema comic.schema.json "$out/carried.comic.json"
 echo "the strip is ${width}x${height}, drawn on the $(jq -r .renderer "$answer"), and carries its craft-comic/1 script"
 if [ $mode = native ]; then
   (cd "$out" && "$comic" draw "$root/Schema/examples/hashmap.comic.json" --out gpu.png --seed 7 --renderer gpu >/dev/null 2>&1 \
