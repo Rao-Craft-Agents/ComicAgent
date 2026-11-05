@@ -1,0 +1,17 @@
+{
+  "name": "Comic",
+  "tagline": "Stick-figure comic strips that explain a concept, lettered by hand and drawn on the GPU.",
+  "category": "graphics",
+  "keywords": ["comic", "stick-figure", "explainer", "strip", "humour", "illustration", "png", "gpu"],
+  "platforms": ["macOS 14", "Linux arm64"],
+  "license": "MIT",
+  "fields": [
+    {"name": "brief", "type": "string", "required": false, "note": "what to explain and the angle to take: the concept, who is confused by it, where the joke is; the ask when left out"},
+    {"name": "panels", "type": "integer", "required": false, "note": "how many panels, 1 to 6; left out, the model picks three to five, or one for a gag"},
+    {"name": "script", "type": "string", "required": false, "note": "a strip's PNG from an earlier call (it carries its script), or a .comic.json, to draw again; with a brief, changed as the brief asks"},
+    {"name": "output", "type": "string", "required": false, "note": "where to write the PNG; comics/<title>.png when left out"},
+    {"name": "rounds", "type": "integer", "required": false, "note": "how many times the model may fix what the strip measured; 3 when left out"},
+    {"name": "seed", "type": "integer", "required": false, "note": "a number that fixes the hand's wobble; the same script and seed draw the same picture"},
+    {"name": "renderer", "type": "gpu|cpu|auto", "required": false, "note": "gpu, cpu, or auto (left out): the GPU when there is one, the same picture on the CPU when there is none"}
+  ]
+}
